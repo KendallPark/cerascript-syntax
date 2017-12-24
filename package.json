@@ -1,0 +1,26 @@
+{
+    "name": "cera",
+    "displayName": "cerascript",
+    "description": "Language support for Kyle Brockman's CeraScript",
+    "version": "0.0.1",
+    "publisher": "kendallpark",
+    "engines": {
+        "vscode": "^1.19.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "cerascript",
+            "aliases": ["CeraScript", "cerascript"],
+            "extensions": ["cera"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "cerascript",
+            "scopeName": "source.cera",
+            "path": "./syntaxes/cerascript.tmLanguage.json"
+        }]
+    }
+}
