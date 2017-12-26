@@ -3,27 +3,324 @@
 	"name": "CeraScript",
 	"patterns": [
 		{
-			"include": "#keywords"
+			"include": "#first-meta"
 		},
 		{
-			"include": "#strings"
+			"include": "#meta"
+		},
+		{
+			"include": "#dialogue"
+		},
+		{
+			"include": "#comments"
 		}
 	],
+
 	"repository": {
-		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.cerascript",
-				"match": "\\b(if|while|for|return)\\b"
-			}]
-		},
-		"strings": {
-			"name": "string.quoted.double.cerascript",
-			"begin": "\"",
-			"end": "\"",
+		"operators": {
 			"patterns": [
 				{
-					"name": "constant.character.escape.cerascript",
-					"match": "\\\\."
+					"match": "(==|<=|>=|%|!=|=|<|>|!)",
+					"name": "keyword.operator.cerascript"
+				}
+			]
+		},
+		"numeric": {
+			"patterns": [
+				{
+					"match": "\\s*(-?[0-9]+)\\s*",
+					"captures": {
+						"1": {
+							"name": "constant.numeric.cerascript"
+						}
+					}
+				}
+			]
+		},
+		"variables": {
+			"patterns": [
+				{
+					"match": "\\b([a-z]{1})\\b",
+					"captures": {
+						"1": {
+							"name": "entity.name.class.cerascript"
+						}
+					}
+				},
+				{
+					"match": "\\s*([A-Z][a-z0-9]\\w*)\\s*",
+					"captures": {
+						"1": {
+							"name": "entity.name.class.cerascript"
+						}
+					}
+				},
+				{
+					"match": "\\s*([a-z]\\w+)\\s*",
+					"captures": {
+						"1": {
+							"name": "variable.other.cerascript"
+						}
+					}
+				},
+				{
+					"match": "\\s*([A-Z]{2,}(?:_[A-Z]+)*)\\s*",
+					"captures": {
+						"1": {
+							"name": "constant.character"
+						}
+					}
+				}
+			]
+		},
+		"first-meta": {
+			"begin": "\\A",
+			"end": "^([-]{3,})$",
+			"endCaptures": {
+				"1": {
+					"name": "comment.line.double-dash.cerascript"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#expression"
+				}
+			]
+		},
+		"meta": {
+			"begin": "^([=]{3,})$",
+			"beginCaptures": {
+				"1": {
+					"name": "comment.line.double-dash.cerascript"
+				}
+			},
+			"end": "^([-]{3,})$",
+			"endCaptures": {
+				"1": {
+					"name": "comment.line.double-dash.cerascript"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#expression"
+				}
+			]
+		},
+		"dialogue": {
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#keywords"
+				},
+				{
+					"include": "#commands"
+				},
+				{
+					"include": "#braces"
+				},
+				{
+					"begin": "^\\s*(\\$\\w+)\\s*",
+					"beginCaptures": {
+						"1": { "name": "variable.other.cerascript" }
+					},
+					"end": "$",
+					"patterns": [
+						{
+							"include": "#expression"
+						}
+					]
+				},
+				{
+					"include": "#lines"
+				}
+			]
+		},
+		"expression": {
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#operators"
+				},
+				{
+					"include": "#braces"
+				},
+				{
+					"include": "#numeric"
+				},
+				{
+					"include": "#array-literal"
+				},
+				{
+					"include": "#numeric"
+				},
+				{
+					"include": "#variables"
+				}
+
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"match": "^\\s*(option)\\s*",
+					"captures": {
+						"1": { "name": "keyword.control.cerascript" }
+					}
+				},
+				{
+					"begin": "^\\s*(if|elif|else|inject|while|break|choice|inject|bookmark|trigger|goto|subscene)\\b",
+					"beginCaptures": {
+					"1": {
+						"name": "keyword.control.cerascript"
+						}
+					},
+					"end": "$",
+					"patterns": [
+						{
+							"include": "#expression"
+						}
+					]
+				}
+			]
+			
+		},
+		"comments": {
+			"patterns": [{
+				"name": "comment.line.double-slash",
+				"match": "\\s*\/\/.*$"
+			}]
+		},
+		"braces": {
+			"patterns": [{
+				"begin": "\\s*(\\{)",
+				"beginCaptures": {
+					"1": {
+						"name": "meta.brace.curly.cerascript"
+					}
+				},
+				"end": "(\\})",
+				"endCaptures": {
+						"1": {
+							"name": "meta.brace.curly.cerascript"
+						}
+					},
+				"patterns": [
+					{
+						"match": "\\s*([\\w\\-']*)\\s*",
+						"captures": {
+							"1": {
+								"name": "support.type.cerascript"
+							}
+						}
+					},
+					{
+						"include": "#variables"
+					}
+				]
+			}]
+		},
+		"array-literal": {
+			"patterns": [
+				{
+					"begin": "\\s*([a-z]\\w*)(\\[)",
+					"beginCaptures": {
+						"1": {
+							"name": "variable.other.cerascript"
+						},
+						"2": {
+							"name": "meta.brace.square.cerascript"
+						}
+					},
+					"end": "\\]",
+					"endCaptures": {
+						"0": {
+							"name": "meta.brace.square.cerascript"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#expression"
+						}
+					]
+				}
+			]
+		},
+		"commands": {
+			"patterns": [
+				{
+					"begin": "^\\s*(?!SAY[A-Z]*)([A-Z]{2,})\\s*",
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.function.cerascript"
+						}
+					},
+					"end": "$",
+					"patterns": [
+						{
+							"include": "#braces"
+						},
+						{
+							"include": "#expression"
+						}
+					]
+				}
+			]
+		},
+		"lines": {
+			"patterns": [
+				{
+					"begin": "^\\s*(?:(SAY[A-Z]*)\\s*)?(?:\\[(\\w+)(\\*?)\\]\\s*)?(\\||\\\\|\\+)?(\\w*)(\\*|\\)|%)?\\s*(?:\\{(.*)\\}\\s*)?",
+					"beginCaptures": {
+						"1": { "name": "entity.name.function.cerascript"},
+						"2": { "name": "constant.numeric.cerascript" },
+						"3": { "name": "keyword.operator.cerascript" },
+						"4": { "name": "keyword.control.cerascript" },						
+						"5": { "name": "entity.name.class.cerascript" },
+						"6": { "name": "keyword.control.cerascript" },
+						"7": { "name": "support.type.cerascript" }
+					},
+					"end": "$",
+					"patterns": [
+						{
+							"begin": "<i*>",
+							"end": "<\/i*>",
+							"name": "markup.italic"
+						},
+						{
+							"begin": "<b*>",
+							"end": "<\/b*>",
+							"name": "markup.bold"
+						},
+						{
+							"match": "\\*(\\w*|\\w*(?:(?:\\-|~)\\w*))\\*",
+							"captures": {
+								"1": {
+									"name": "constant.character"
+								}
+							}
+						},
+						{
+							"match": "<i>([^<]*)<\/i>",
+							"captures": {
+								"1": {
+									"name": "markup.italic"
+								}
+							}
+						},
+						{
+							"match": "<b>([^<]*)<\/b>",
+							"captures": {
+								"1": {
+									"name": "markup.bold"
+								}
+							}
+						}
+
+					]
 				}
 			]
 		}
