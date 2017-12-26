@@ -1,6 +1,6 @@
 {
-    "name": "cera",
-    "displayName": "cerascript",
+    "name": "cerascript",
+    "displayName": "CeraScript Syntax",
     "description": "Language support for Kyle Brockman's CeraScript",
     "version": "0.0.1",
     "publisher": "kendallpark",
